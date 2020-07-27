@@ -1,0 +1,87 @@
+yaronlev9
+
+
+File description:
+package exceptions includes:
+1.TypeOne.java: this file contains a class that represents a TypeOne exception it extends Exception.
+2.TypeTwo.java: this file contains a class that represents a TypeTwo exception it extends Exception.
+
+package filters includes:
+1.Filter.java: this file is an interface that has a single method called isPass.
+2.BetweenFilter.java: this file contains a class that represents a BetweenFilter object that implements Filter.
+3.ContainsFilter.java: this file contains a class that represents a ContainsFilter object that implements Filter.
+4.FileFilter.java: this file contains a class that represents a FileFilter object that implements Filter.
+5.GreaterThanFilter.java: this file contains a class that represents a GreaterThanFilter object that implements Filter.
+6.PermissionsFilter.java: this file contains a class that represents a PermissionsFilter object that implements Filter.
+7.PrefixFilter.java: this file contains a class that represents a PrefixFilter object that implements Filter.
+8.SmallerThanFilter.java: this file contains a class that represents a SmallerThanFilter object that implements Filter.
+9.SuffixFilter.java: this file contains a class that represents a SuffixFilter object that implements Filter.
+10.AllFilter.java: this file contains a class that represents an AllFilter object that implements Filter.
+
+package filesprocessing includes:
+1.DirectoryProcessor.java: this file contains a class that represents a DirectoryProcessor object.
+2.Manager.java: this file contains a class that represents a Manager object.
+3.Order.java: this file contains a class that represents an Order object.
+4.Section.java: this file contains a class that represents a Section object.
+5.SectionFactory.java: this file contains a class that represents a SectionFactory object.
+
+Design:
+i decided to put all the filters in a different package called filters and every type of filter has its own class
+that implements a Filter interface and overrides the isPass method. the filters: hidden writable and executable i put
+inside one class called PermissionsFilter.java that also implements Filter, in the constructor it receives a string
+called filter which is equal to hidden, writable or executable and when isPass is called it has
+a switch case that does the specific filter depends on the type of filter the object gets in the constructor.
+
+all the filter objects receive an instance called noActivated that is equals true when #NOT is in the command line
+of the filter type, and when it is true it filters the opposite.
+
+i decided to put all the order type in a single Order class that every Order object receives a string with a name
+of the order and has a method that calls the correct order method using switch case. in addition the Order object
+has a reversed instance that if #REVERSE is in command line the instance equals true and the order is made in reverse.
+
+the exceptions are also in a different package called exceptions which there are 2 classes one for type 1 error
+and one for type 2 they both extend Exception.
+
+i created a Section class that receives a filter an order objects and an array of type 1 error messages to be printed
+later in its constructor.
+
+The DirectoryProcessor has the main method that receives the 2 arguments, the main method checks if the number of
+arguments is correct if not it prints to err the error message of type two and closes the program.
+than it calls the constructor of the DirectoryProcessor where it creates an array of all the files that are not
+directories using the makeArrayOfFiles() method. than it reads all the lines in the command file using Scanner
+and creates an array list of all the lines using the makeArrayofComands() method. if the file is not found
+it throws a FileNotFoundException to the constructor where an error type two message is printed to the err.
+
+the constructor calls the SectionFactory file where all the section objects are created. and if any type two error
+occurs there than the constructor of the DirectoryProcessor catches them and prints the error message to the err,
+assigns the sections instance null and returns to the main method. than the main method checks if sections is null
+if true than stops the program.
+
+the SectionFactory iterates over every section in the commands array list using while, if the size of the commands
+array is less than 3 lines it throws a type 2 exception. if the first line of every section is not FILTER also
+throws type 2 exception, if it equals FILTER than checks the next line and checks the filter command using the
+createFilter() method if something is wrong than the inside method throws a type 1 exception to createFilter() which
+catches it and adds the error message with the line the error happened to the messages array list. once creates a filter
+it does the same with the order using the createOrder() method. if the size of the section is 3 and not for the while
+loop jumps 3 lines instead of 4 to the next section.
+
+the createFilter() and createOrder methods are responsible for catching type 1 errors and adding the error message
+to the messages array list of the specific section.
+
+the Manager class receives the sections array from the DirectoryProcessor and iterates over all the sections using
+the printAllSections(), if the messages array list of every section is not empty it first prints the type 1 error
+messages than filters using the filter the section holds and than the sorts the filtered list using the order object
+in the section in the printSection() method.
+
+Implementation issues:
+i decided to use quick sort algorithm for the order types because its run time is o(nlogn) which is fast enough.
+i made a Section Class that receives an error message array list so i could print them before i print the files in the
+section and not when the exception is thrown.
+i used SectionFactory that creates the Sections and in every section i create a filter and an order objects.
+the Manager Class is responsible for executing the filtering and printing the files by the order given.
+the order and filter objects have a boolean instance that when equals true the object's method works the opposite
+than it is expected.
+
+
+
+
