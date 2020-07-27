@@ -1,0 +1,173 @@
+yaronlev9
+
+
+File description:
+1.SimpleHashSet.java: this file contains an abstract class that implements the SimpleSet interface and
+represents a SimpleHashSet.
+2.ClosedHashSet.java: this file contains a class that represents a ClosedHashSet which extends SimpleHashSet.
+3.OpenHashSet.java: this file contains a class that represents an OpenHashSet which extends SimpleHashSet.
+4.OpenLinkedList.java: this file contains a class that represents the OpenLinkedList.
+5.CollectionFacadeSet.java: this file is a facade class that implements the SimpleSet interface and minimizes the
+api of the given collection in it's constructor.
+6.SimpleSetPerformanceAnalyzer.java: this file is the test for the different collections that implement the
+SimpleSet interface.
+
+Design:
+In the SimpleHashSet class in the constructors in addition to the load factors and the capacity that appear as
+instances i added an instance size so i could keep count of the number of values in the set. i left the capacity
+method as abstract method.
+
+In the OpenHashSet every constructor calls first the constructor of the SimpleHashSet and than i create an object
+that is build from an array of OpenLinkedLists using the makeLinkedLists() method.
+the private method makeLinkedLists() runs on all the empty indexes of the array and creates a new OpenLinkedList.
+the OpenLinkedList is a class that has an instance of type LinkedList and a method getLinkedList() that returns
+the OpenLinkedList.
+the method add first checks if the value given is contained in the set if not it checks if the size of the current
+set plus the new value divided by the capacity is upper than the upper load factor if yes it creates an new set
+twice the length using the makeArrayBigger() method and then it adds the value to the set.
+the method delete first checks if the value is contained if yes it removes the value and than checks if the current
+size divided by the capacity is lower than the lower load factor if yes it creates an new set
+half the length using the makeArraySmaller() method.
+the method private makeNewHashSet() creates a new OpenHashSet with the new capacity given and adds all the values that
+were in the old set to the new set.
+
+In the ClosedHashSet every constructor calls first the constructor of the SimpleHashSet and than i create an object
+closedHashSet that is an array of strings.
+i made a constant variable called DELETED that creates a new string "deleted". every time i delete a value from
+the set i assign the index on the list to the variable DELETED.
+the method add first checks if the value given is contained in the set if not it checks if the size of the current
+set plus the new value divided by the capacity is upper than the upper load factor if yes it creates an new set
+twice the length using the doubleArraySize() method and then it adds the value to the set.
+the method delete first checks if the value is contained if yes it removes the value and assigns the DELETED variable
+to the index of the removed value and than checks if the current size divided by the capacity is lower than the lower
+load factor if yes it creates an new set half the length using the halfArraySize() method.
+the method contains calls the private method getItemsIndex(String searchVal) which returns the index of the value
+if it was found and if not returns ERROR CODE (-1) if it returns the index the method contains returns true if -1
+returns false.
+the private method getItemsIndex(String searchVal) iterates from 0 to the length of the set it calculates the index
+using the hash of the value and a quadratic equation using the number of the iteration if it finds the value it returns
+the index if in the end of the iteration it was not found returns ERROR CODE.
+the private method newClosedHashSet() creates a new ClosedHashSet with the new capacity given and adds all the
+values that were in the old set to the new set.
+the private method insertEmptyIndex(String text) iterates from 0 to the length of the set it calculates the index
+using the hash of the value and a quadratic equation using the number of the iteration if it finds a spot that is null
+or DELETED is assigned to it it places the value and stops the iteration.
+
+the CollectionFacadeSet receives a collection in the constructor it has the methods add, delete, size, contains.
+if the add is called it first checks if the item is contained if no that adds the value.
+if the delete is called it first checks if the item is contained if yes than removes the value.
+
+the SimpleSetPerformanceAnalyzer is a test class that has 6 test each for the tests given in the exercise:
+testAddData1(): adds the data1.txt to the collection array.
+testAddData2(): adds the data2.txt to the collection array.
+testContainsString1Data1(): checks if hi is contained in the collection array that has data1.
+testContainsString2Data1(): checks if -13170890158i is contained in the collection array that has data1.
+testContainsString3Data2(): checks if 23 is contained in the collection array that has data2.
+testContainsString1Data2(): checks if hi is contained in the collection array that has data2.
+runAllContainsTests(): runs all the contains tests.
+
+the private method addData(String[] data): for every collection in the array it adds all the strings in the data
+given and prints the time it took for every collection to add the data.
+
+the private method addDataNoPrint(String[] data): for every collection in the array it adds all the strings in the data
+given.
+
+the private method containsString(String text): for every collection in the array it checks if the text given is
+contained in the collection and prints the time it took to find it.
+
+the main method runs all the tests in the order given in the exercise.
+Implementation issues:
+i decided to implement the OpenHashSet as an array of OpenLinkedList. the OpenLinkedList is a class that has an
+instance of type LinkedList <String>. that way every string that is added to the OpenHashSet i calculate the hash code
+of that string and after clamping i receive an index in the OpenHashSet and i add the string to the OpenLinkedList
+that is in the index of the array. i do the same thing with the contain method i find the index using the hash and check
+if the string is contained in the OpenLinkedList.
+Same thing when deleting a string.
+when asking the size i iterate over all the indexes in the array and every index i ask the size of the OpenLinkedList.
+
+in the ClosedHashSet the structure is an array of Strings.
+when adding every index is added by assigning that index to the String. the index is calculated using the quadratic
+equation and the hash function.
+when deleting i first check if the value is contained if yes the index where the value is stored is assigned to
+a constant variable of the class called DELETED = "deleted" which is different than the other Strings objects because
+its a new string so when comparing it to another string with "==" it returns false because they are different string
+objects. it will return true only when the index is assigned to the constant variable. so even if i compare the strings
+using equals will return true because both strings equals "deleted" when comparing using "==" i will get false.
+
+Answers to questions:
+1)
+in OpenHashSet while adding data1 because all the values in the data1 have the same hash codes it adds all the values
+to the same index (the same OpenLinkedList) that is why the result should be close to the result in adding the
+LinkedList.
+while checking if -13170890158 is contained because hi has the same hash value like the rest the contain method runs
+on the openlinkedlist that has the index of the hash code of the word hi and because -13170890158 is not in data1 it
+runs over all the list so the result should be close to the result in the linked list.
+
+in ClosedHashSet while adding data1 because all the values in the data1 have the same hash codes every time it
+adds it needs to iterate until it finds an empty index so it behaves like a chain of a linked list that every time
+it checks the same indexes until it finds something empty. so it takes o(n) to add one value where n is the size of the
+set.
+while checking if -13170890158 is contained because it has the same hash code like all the values in it, the method
+iterates on all the values in the chain order that it was constructed the way i explained when adding and because it is
+not in data1 it does n iterations where n is the size of the set.
+
+2)
+OpenHashSet:
+strengths:
+it is fast when adding strings with balanced hash codes and not ones that have the same hash codes.
+it is fast when asking if a value is contained when the strings with balanced hash codes and not ones that have the
+same hash codes.
+weaknesses:
+when the strings in the set have the same hash codes the running time is slow both in add and contains unless i ask
+if it has a string with a different hash code.
+
+ClosedHashSet:
+strengths:
+it is fast when adding strings with balanced hash codes and not ones that have the same hash codes.
+it is fast when asking if a value is contained when the strings with balanced hash codes and not ones that have the
+same hash codes.
+weaknesses:
+when the strings in the set have the same hash codes the running time is slow both in add and contains unless i ask
+if it has a string with a different hash code.
+
+TreeSet:
+strengths:
+it is fast when adding, and checking if contained.
+weaknesses:
+none
+
+Linked list:
+strengths:
+in general linked list is fast when adding for any type of strings.
+weaknesses:
+usually linked list is fast when adding but this time before adding i need to check if the string is contained so it
+makes it slow.
+it is slow with the contains method because it needs to go over the entire list until it finds the string or reaches
+the end of the list.
+
+HashSet:
+strengths:
+it is fast when adding, and checking if contained.
+weaknesses:
+none
+
+3)
+when adding data1 both sets were slow because every time a value was added it had to go over all the values,
+the ClosedHashSet does more operations like calculating the index so the time was about twice the time of the
+openHashSet.
+when adding data2 ClosedHashSet was faster.
+when checking if a string that has a different hash code than all the other strings in the set both were fast with
+pretty much the same time.
+when checking if a string that has the same hash code than all the other strings in the set the openHashSet was faster
+than the ClosedHashSet.
+when checking if a string (that is not contained) is contained in a set with strings with different hash codes the
+openHashSet was a bit faster than the ClosedHashSet.
+when checking if a string (that is contained) is contained in a set with strings with different hash codes the
+openHashSet was faster than the ClosedHashSet.
+
+4)
+when adding data1 and data2 both implementation were slow in compare to the hashSet.
+when checking if strings are contained both implementation were slow in compare to the hashSet except while checking
+if hi which is not in the data2 is contained where openHashSet was faster than the hashSet.
+
+
