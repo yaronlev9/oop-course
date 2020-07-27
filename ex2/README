@@ -1,0 +1,93 @@
+yaronlev9
+
+
+File description:
+
+1.SpacesShipFactory.java: this file contains a class that represents a list of the objects of the different spcaseShips.
+2.SpaceShip.java: this file contains a class that represents a SpaceShip with it's defualt attributes.
+3.for every type of spaceship i made a different file that represents a class for that specific spaceship
+with it's specific attributes, each class inherit from the SpaceShip class. (Aggressive.java,Basher.java,Runner.java,
+Human.java,Drunkard.java,Special.java).
+
+Design:
+The objects of the different types of the Spaceship recieve the attributes and the data members and the actions it can
+do from the father class Spaceship.java i made 6 additional classes for each spaceship in which they recieve additional
+attributes more specific to each spaceship.
+
+All the methods that appear in two or more spaceships i wrote in the father class.
+
+I also added a helper method isFireCoolDownOver() to the fire() method to checks if the cool down period is over and
+the ship can fire again returns true if yes and no if not.
+
+1.Runner spaceship:
+overrides the method doAction() of the father class, it uses the method turnAway() of the father class that forces it
+turn away from the closest spaceship and also uses the method doAction() of the father class.
+the class has a method teleportRequirements() that recieves the object of the game and checks if the enemy
+spaceship has an angle to fire at the runner and within range and if requirements are met the runner teleports.
+
+2.Aggresive spaceship:
+overrides the method doAction() of the father class, it uses the method faceTowards() of the father class that forces
+it turn towards the closest spaceship and also uses the method doAction() of the father class.
+the class has a method shootOnRequirements() that recieves the object of the game and checks if the enemy ship is
+within distance to fire at and if requirements are met it fires.
+
+3.Basher spaceship:
+overrides the method doAction() of the father class, it uses the method faceTowards() of the father class that forces
+it turn towards the closest spaceship and also uses the method doAction() of the father class.
+the class has a method shieldOnRequirements() that recieves the object of the game and checks if the enemy ship is
+within distance to turn on the shield and if requirements are met turns on the shield.
+
+4.Human spaceship:
+overrides the method doAction() of the father class, it uses the method setDirection() that checks if the turning
+buttons are pressed turns accordingly. it also overrides the method getImage() that returns the image of the human ship
+with it's shield on or off. then uses the method doAction() of the father class.
+
+5.Drunkard spaceship:
+the class has a constructor that calls the function chooseRandomStart() that sets the starting turn side for the drunk
+ship. the drunk ship turns for a constant number of rounds to one side and then turns the same number of rounds to the
+other side, the drunk ship always accelerates.
+the method drunkTurn() checks if the constant numbers of rounds is reached and then changes the direction of the ship.
+the method randomShield() chooses a number of a group of numbers from 0 to 400 if the number is higher than 90 percent
+of 400 it calls the drunkSheild() method.
+the drunkShield() method activates the shield, after the shield is activated it is turned for just 1 round.
+the randomFire() method chooses a number of a group of numbers from 0 to 100 if the number is higher than 90 percent
+of 100 it calls the fire method.
+
+I chose to put the random numbers as magic numbers so it is easier to change the randomness and have more flexibility
+in changes.
+
+the class overrides the method doAction() of the father method but also calls within the father method.
+
+6.Special spaceship:
+the special ship has 2 behaviors depending it's current health, when it's health is 7 and lower it runs away from
+the closest ship (it calls the turnAway() method of the father class) and when the enemy ship gets too close to the
+ship (distane of 0.2) the special ship teleports.
+when the health above 7 it behaves aggressively it move towards the closest ship (it calls the method faceTowards()).
+whenever the distance between the closest enemy ship and the special ship is closer than 0.25 it starts to fire.
+whenever the distance between the closest enemy ship and the special ship is closer than 0.15 the enemy ship
+cannot accelerate and cannot turn on the shield.
+
+the method fire() overrides the method in the father class and if the closest enemy ship within range it calls the
+father method to fire.
+the method specialTeleport() checks if the ship behaves like a runner and the closest enemy ship is too close
+the ship teleports.
+the method neutralizeClosestShip() checks if the closest ship is within minimum distance if yes the enemy ship
+cannot turn on it's shield or accelerate.
+the method aggresiveOrPassive() checks the healh of the ship if its bellow minimum the spcaeship acts like a runner
+if not acts like an aggressor.
+the method doAction() overrides the method of the father class and does all the actions that the special ship does
+it also regenerates every round the current energy level by 4 the maximal energy level by 1 and the
+fire cooldown counter by 7.
+
+I chose to put all the minimum distances and the regeneration attributes as magic numbers to give more felxibility
+to change the behavior of the ship.
+
+Implementation issues:
+i chose the SpaceShip class as the father class and all the differents spaceships classes inherit from it.
+methods that are relevant for 2 or more spaceships a wrote in the father class including the data members,
+and methods, data members or magic numbers that are relevant to a specific class i wrote in the specific class.
+that way i avoid any duplications in the code.
+
+* in order for the special ship to be able to disable the accelerate and shield of the closest ship in the initial
+input the special ship needs to be put last.
+
