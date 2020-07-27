@@ -1,0 +1,111 @@
+yaronlev9
+
+
+File description:
+
+1.Locker.java: this file contains a class that represents a locker.
+2.LongTermStorage.java: this file contains a class that represents the long term storage.
+3.BoopingSite.java: this file contains a class that represents the booping site.
+4.CompareByDistance.java: this file contains a class that gets the interface Comparator and overrides the compare
+method.
+5.CompareByStarRating.java: this file contains a class that gets the interface Comparator and overrides the compare
+method.
+6.LockerTest.java: this file is the test for the Locker class.
+7.LongTermTest.java: this file is the test for the Long term storage class.
+8.BoopingSiteTest.java: this file is the test for the Booping site class.
+9.SpaceshipDepositoryTest: this file is the test suite that calls the LockerTest file and the LongTermTest file.
+
+Design:
+in the Locker class i chose to collect data for the inventory in a hash map structure as requested where every item
+is represented with its string name and the number of copies it contains in the locker.
+i chose this structure because its very simple to get data from it and search for items by their string name.
+i decided that adding items with 0 copies will not be added to the map and return -1 and a general error message
+because in reality i cannot add zero number of items and i count in the locker all the items
+that really exist in that locker (that have at least 1 copy or more). the same for removing items when i remove
+all the copies from the inventory of a specific item i remove the item key from the map.
+whenever i try to add a negative number of copies or a null item i get -1 and a general error message.
+i added 2 private methods:
+tryInsertLockerOrLTS: that checks if conditions are met for moving to either to locker or to long term storage or
+to both.
+MoveToStorage: if conditions are met some copies are moved to long term storage.
+i added the checkItemExistence private method: that is called every time i try to add either football or baseball bat
+and checks if the other item is in inventory if yes then it returns -2 and an error message.
+in the remove method if i try to remove a 0 number of copies or a null item i receive -1 and a general error message.
+in the getItemCount method whenever inventory is not empty and it contains the item i return the number of copies
+of that item and if the inventory is empty or does not contain the item i return 0, its logical that when i ask
+for a number of copies of an item that is not in inventory the count of it will always be 0.
+in the getCapacity method if the capacity of the locker is zero or above i return the capacity, if its negative
+i return -1 and a general error message.
+the Locker class has a static data member which is a longTermStorage object that is common for all the locker objects.
+when adding to a locker causing to move some of the units to the long term object it calls the add item method of
+that object.
+
+in the long term storage i chose to collect data for the inventory in a hash map structure as requested where every
+item is represented with its string name and the number of copies it contains in the storage.
+i chose this structure because its very simple to get data from it and search for items by their string name.
+also like in the Locker class i decided that adding items with 0 copies will not be added to the map and return -1 and
+a general error message because in reality i cannot add zero number of items and i count in the storage all the items
+that really exist in that storage (that have at least 1 copy or more). the same for removing items when i remove
+all the copies from the inventory of a specific item i remove the item key from the map.
+whenever i try to add a negative number of copies or a null item i get -1 and a general error message.
+the longTermStorage object doesn't have a static data member like the locker.
+in the getItemCount method whenever inventory is not empty and it contains the item i return the number of copies
+of that item and if the inventory is empty or does not contain the item i return 0, its logical that when i ask
+for a number of copies of an item that is not in inventory the count of it will always be 0.
+
+in the booping site the constructor makes an array of all the hotels that are in the dataset given.
+i made 3 private methods:
+hotelInCityCount: this method counts the number of hotels that are in the city given from the array data member
+of the object (all the hotels) and return the counter.
+makeArrayByCity: this method fills a new array from the array data member of the object that contains all the hotels
+that are in the city given.
+makeNewArrayByProximity: this method is called when i want to sort hotels by proximity, this method fills a new array
+from the array data member that contains all the hotels and basically makes a copy of it.
+
+in the getHotelsInCityByRating: i first create a new array that contains all the hotels in the city given, and
+than i made a new object of the class CompareByStarRating that sorts the array by star rating and by alphabetical order
+and i return the sorted array.
+the CompareByStarRating implements the Comparator interface that overrides the compare method that receives 2 hotel
+objects, if the first hotel's star rating is lower than the second hotel's star rating it returns 1 if its higher
+it returns -1 if it's equal it compares the alphabetical order of the property names of the hotels, if their names
+are in the same order (which is unlikely) it returns 0 and doesn't change the order.
+when calling the sort method of the object with the array that needs to be sorted it compares all the hotels if it
+returns 1 it makes the switch if -1 or 0 it doesn't.
+
+in the getHotelsByProximity: i create a new array of all the hotels and that i make a new object of the class
+CompareByDistance that sorts the array by the distance of the hotels from the position given from closer to further
+and if the distance is the equal it sorts by number of points of interest and return the sorted array.
+the CompareByDistance implements the Comparator interface that overrides the compare method that receives 2 hotels.
+in the constructor of this method it receives the latitude and the longitude of the position.
+it has 2 private methods:
+distanceFromPoint: that calculates the distance of the hotel from the position given and returns the distance.
+compareByNumberOfPOI: this method is called whenever the distance of the 2 hotels is equal, if the number of poi
+of the first hotel is lower that the number of poi of the second hotel it returns 1 if higher returns -1 and if equal
+returns 0.
+the compare method receives 2 hotels if the distance of the first hotel from the position is larger than the distance
+of the second hotel it returns 1 if smaller returns -1 and if the same it calls the compareByNumberOfPOI method that
+compares by the number of poi of each hotel.
+when calling the sort method of the object with the array that needs to be sorted it compares all the hotels if it
+returns 1 it makes the switch if -1 or 0 it doesn't.
+
+in the getHotelsInCityByProximity: i made a new array that contains all the hotels in the city given and then i made
+the object of the compareByDistance that sorts the array by the distance from the given position from closer to further
+if the distance is the same it sorts from the highest number of poi to the lowest if the number is the same the order
+doesn't matter.
+
+Implementation issues:
+in the Locker class i made that when the capacity of the number of copies of an item that need to be added plus the
+capacity of the copies of the item that is already in the locker is above 50 percent of the capacity of the locker
+then i move an amount from the added copies and the copies that are already in the locker that equals or below the
+20 percent of the locker's capacity.
+adding items to locker or long term storage with 0 copies returns -1 and a general error message.
+when calling getItemCount if i can't find the item it returns 0 both ib locker and long term storage.
+in the locker class i used a static data member of a longTermStorage object because it aplies for all locker objects.
+
+in the booping site for the different searches i made classes that implements the Comparator interface one called
+CompareByStarRating which overrides the compare method and one called CompareByDistance which ovrrides the compare
+method.
+i used arrays to store the hotels objects because its easier to sort them.
+
+
+
